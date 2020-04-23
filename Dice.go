@@ -21,7 +21,8 @@ type DiceHand struct {
 
 // DiceBag contains results of throw
 type DiceBag struct {
-	result []int
+	result   []int
+	modifier int
 }
 
 func initialize() {
@@ -37,7 +38,7 @@ func ThrowDices(diceString string) DiceBag {
 	var paramsMap map[string]string
 	matchTest, _ := regexp.MatchString("^(?P<throws>\\d*)(?P<symbol>[dDkKfF])(?P<dice>\\d+)(?P<exploding>!*)(?P<modifier>[+-]*)(?P<modValue>\\d*)$", diceString)
 	if !matchTest {
-		db := DiceBag{make([]int, 0)}
+		db := DiceBag{make([]int, 0), 0}
 		return db
 	}
 	reg := regexp.MustCompile("^(?P<throws>\\d*)(?P<symbol>[dDkKfF])(?P<dice>\\d+)(?P<exploding>!*)(?P<modifier>[+-]*)(?P<modValue>\\d*)$")
@@ -61,7 +62,7 @@ func ThrowDices(diceString string) DiceBag {
 	}
 
 	db := DiceBag{}
-	db.result = make([]int, throws+1)
+	db.result = make([]int, throws)
 	d := Dice{dice}
 
 	if len(paramsMap["exploding"]) > 0 {
@@ -91,7 +92,7 @@ func ThrowDices(diceString string) DiceBag {
 
 			modValue *= -1
 		}
-		db.result[len(db.result)-1] = modValue
+		db.modifier = modValue
 	}
 	return db
 }
@@ -102,7 +103,13 @@ func (db DiceBag) Sum() int {
 	for x := 0; x < len(db.result); x++ {
 		result += db.result[x]
 	}
+	result += db.modifier
 	return result
+}
+
+// GetResult returns throw as array
+func (db DiceBag) GetResult() []int {
+	return db.result
 }
 
 // Throw simple dice throw
