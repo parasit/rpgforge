@@ -117,3 +117,9 @@ func (d Dice) Throw() int {
 	initialize()
 	return rand.Intn(d.Sides) + 1
 }
+
+// Simple Throw dices and take int result
+func SimpleThrow(dicestring string) int {
+	result := ThrowDices(dicestring)
+	return result.Sum()
+}
