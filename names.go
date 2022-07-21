@@ -2,9 +2,11 @@ package rpgforge
 
 import (
 	"embed"
-	"fmt"
 	"math/rand"
 	"strings"
+
+	"golang.org/x/text/cases"
+  "golang.org/x/text/language"
 )
 
 //go:embed names/all.last
@@ -22,36 +24,33 @@ func check(e error) {
 	}
 }
 
-// Read data from embed file and return []string
-func ReadEmbedData(embedFile* embed.FS, filename string) []string {
+// Read data from embed file and return string
+func GetRandomEmbedData(embedFile* embed.FS, filename string) string {
 	data, err := embedFile.ReadFile(filename)
 	check(err)
 	myList := strings.Split(string(data[:]), "\n")
-	return myList
+  c := cases.Title(language.Und)
+  result := c.String(strings.ToLower(myList[rand.Intn(len(myList))]))
+	return result
 }
 
 // Get random last name
 func GetLastName() string {
 	var result string
 	initialize()
-  myList := ReadEmbedData(&fLastName, "names/all.last")
-	fmt.Printf("Got %d last names\n", len(myList))
-	result = strings.Title(strings.ToLower(myList[rand.Intn(len(myList))]))
+  result = GetRandomEmbedData(&fLastName, "names/all.last")
+	// result = strings.Title(strings.ToLower(myList[rand.Intn(len(myList))]))
 	return result
 }
 func GetFirstMaleName() string {
 	var result string
 	initialize()
-  myList := ReadEmbedData(&fFirstMaleName, "names/male.first")
-	fmt.Printf("Got %d first male names\n", len(myList))
-	result = strings.Title(strings.ToLower(myList[rand.Intn(len(myList))]))
+  result = GetRandomEmbedData(&fFirstMaleName, "names/male.first")
 	return result
 }
 func GetFirstFemaleName() string {
 	var result string
 	initialize()
-  myList := ReadEmbedData(&fFirstMaleName, "names/female.first")
-	fmt.Printf("Got %d first female names\n", len(myList))
-	result = strings.Title(strings.ToLower(myList[rand.Intn(len(myList))]))
+  result = GetRandomEmbedData(&fFirstFemaleName, "names/female.first")
 	return result
 }
