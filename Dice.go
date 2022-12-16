@@ -25,7 +25,8 @@ type DiceBag struct {
 	modifier int
 }
 
-func initialize() {
+// Initialize random seed based on curent system time
+func Initialize() {
 	rand.Seed(time.Now().UnixNano())
 }
 
@@ -114,6 +115,5 @@ func (db DiceBag) GetResult() []int {
 
 // Throw simple dice throw
 func (d Dice) Throw() int {
-	initialize()
 	return rand.Intn(d.Sides) + 1
 }
